@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.vknewsapp.ui.MainScreen
 import com.example.vknewsapp.ui.PostCard
 import com.example.vknewsapp.ui.theme.VkNewsAppTheme
 
@@ -42,7 +43,7 @@ private fun PreviewFunctions() {
 @Composable
 private fun PreviewScreen() {
     VkNewsAppTheme {
-        PreviewFunctions()
+        MainScreen()
     }
 }
 
@@ -52,6 +53,6 @@ private fun PreviewScreenDark() {
     VkNewsAppTheme(
         darkTheme = true
     ) {
-        PreviewFunctions()
+        MainScreen()
     }
 }
