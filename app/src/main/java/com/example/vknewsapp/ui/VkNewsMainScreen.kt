@@ -10,6 +10,7 @@ import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -17,17 +18,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.vknewsapp.MainViewModel
 import com.example.vknewsapp.domain.FeedPost
 import com.example.vknewsapp.ui.theme.VkNewsAppTheme
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun MainScreen() {
+fun MainScreen(mainViewModel: MainViewModel) {
 
-    val feedPost = remember {
-        mutableStateOf(FeedPost())
-    }
+    val feedPost = mainViewModel.feedPost.observeAsState(FeedPost())
 
     Scaffold(
         bottomBar = {
@@ -64,21 +64,10 @@ fun MainScreen() {
             modifier = Modifier
                 .padding(8.dp),
             feedPost = feedPost.value, //todo
-            onStatisticItemClickListener = { newItem ->
-                val oldStatistics = feedPost.value.statistic
-                val newStatistics = oldStatistics.toMutableList().apply {
-                    replaceAll { oldItem ->
-                        if (oldItem.type == newItem.type) {
-                            oldItem.copy(count = oldItem.count + 1)
-                        } else {
-                            oldItem
-                        }
-                    }
-                }
-                feedPost.value = feedPost.value.copy(
-                    statistic = newStatistics
-                )
-            }
+            onLikeClickListener = mainViewModel::updateCount,
+            onShareClickListener = mainViewModel::updateCount,
+            onViewClickListener = mainViewModel::updateCount,
+            onCommentClickListener = mainViewModel::updateCount,
         )
     }
 }
@@ -89,7 +78,7 @@ private fun PreviewMainScreenLight() {
     VkNewsAppTheme(
         darkTheme = false
     ) {
-        MainScreen()
+//        MainScreen()
     }
 }
 
@@ -99,6 +88,6 @@ private fun PreviewMainScreenDark() {
     VkNewsAppTheme(
         darkTheme = true
     ) {
-        MainScreen()
+//        MainScreen()
     }
 }
