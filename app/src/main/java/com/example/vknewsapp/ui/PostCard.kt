@@ -3,6 +3,7 @@ package com.example.vknewsapp.ui
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -29,11 +30,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.compose.ui.unit.dp
 import com.example.vknewsapp.R
+import com.example.vknewsapp.domain.StatisticItem
+import com.example.vknewsapp.domain.StatisticType
 import com.example.vknewsapp.ui.theme.VkNewsAppTheme
 
 @Composable
-fun PostCard() {
+fun PostCard(
+    modifier: Modifier = Modifier,
+) {
     Card(
+        modifier = modifier,
         shape = RoundedCornerShape(
             size = 6.dp
         ),
@@ -49,7 +55,9 @@ fun PostCard() {
             Text(text = LoremIpsum().toString())
             Spacer(modifier = Modifier.height(12.dp))
             Image(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(300.dp),
                 painter = painterResource(id = R.drawable.post_content_image),
                 contentDescription = null,
                 contentScale = ContentScale.Crop
@@ -61,31 +69,48 @@ fun PostCard() {
 }
 
 @Composable
-private fun PostFooter() {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        IconWithText(
-            iconResId = R.drawable.ic_views_count,
-            text = "916"
-        )
-        Spacer(modifier = Modifier.width(80.dp))
-        IconWithText(
-            iconResId = R.drawable.ic_share,
-            text = "7"
-        )
-        IconWithText(
-            iconResId = R.drawable.ic_comment,
-            text = "8"
-        )
-        IconWithText(
-            iconResId = R.drawable.ic_like,
-            text = "23"
-        )
+private fun PostFooter(
+    statistics: List<StatisticItem>
+) {
+    Row {
+        Row(
+            modifier = Modifier
+                .weight(1f)
+        ) {
+            val viewsItem = statistics.getItemByType(StatisticType.VIEWS)
+            IconWithText(
+                iconResId = R.drawable.ic_views_count,
+                text = viewsItem.count.toString()
+            )
+        }
+        Row(
+            modifier = Modifier
+                .weight(1f),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            val sharesItem = statistics.getItemByType(StatisticType.SHARES)
+            IconWithText(
+                iconResId = R.drawable.ic_share,
+                text = sharesItem.count.toString()
+            )
+            val commentsItem = statistics.getItemByType(StatisticType.COMMENTS)
+            IconWithText(
+                iconResId = R.drawable.ic_comment,
+                text = commentsItem.count.toString()
+            )
+            val likesItem = statistics.getItemByType(StatisticType.LIKES)
+            IconWithText(
+                iconResId = R.drawable.ic_like,
+                text = likesItem.count.toString()
+            )
+        }
     }
+}
+
+private fun List<StatisticItem>.getItemByType(type: StatisticType): StatisticItem {
+    return this.find {
+        it.type == type
+    } ?: throw IllegalArgumentException()
 }
 
 @Composable
