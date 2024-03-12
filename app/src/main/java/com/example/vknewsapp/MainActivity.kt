@@ -34,7 +34,7 @@ private fun PreviewPostCard() {
                 .background(color = MaterialTheme.colorScheme.background)
                 .padding(8.dp),
         ) {
-            PostCard()
+//            PostCard()
         }
     }
 }
