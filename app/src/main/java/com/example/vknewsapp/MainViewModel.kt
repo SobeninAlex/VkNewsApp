@@ -10,7 +10,7 @@ class MainViewModel(
 
 ) : ViewModel() {
 
-    private val _feedPost = MutableLiveData(FeedPost())
+    private val _feedPost = MutableLiveData<FeedPost>()
     val feedPost: LiveData<FeedPost> get() = _feedPost
 
     fun updateCount(item: StatisticItem) {
