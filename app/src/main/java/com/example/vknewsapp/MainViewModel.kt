@@ -10,11 +10,21 @@ class MainViewModel(
 
 ) : ViewModel() {
 
-    private val _feedPost = MutableLiveData<FeedPost>()
-    val feedPost: LiveData<FeedPost> get() = _feedPost
+    private val sourceList = mutableListOf<FeedPost>().apply {
+        repeat(20) {
+            add(
+                FeedPost(id = it)
+            )
+        }
+    }
 
-    fun updateCount(item: StatisticItem) {
-        val oldStatistics = feedPost.value?.statistic ?: throw IllegalStateException()
+    private val _feedPosts = MutableLiveData<List<FeedPost>>(sourceList)
+    val feedPosts: LiveData<List<FeedPost>> get() = _feedPosts
+
+    fun updateCount(feedPost: FeedPost, item: StatisticItem) {
+        val modifiedPosts = feedPosts.value?.toMutableList() ?: mutableListOf()
+        val oldStatistics = feedPost.statistic
+
         val newStatistics = oldStatistics.toMutableList().apply {
             replaceAll { oldItem ->
                 if (oldItem.type == item.type) {
@@ -24,9 +34,26 @@ class MainViewModel(
                 }
             }
         }
-        _feedPost.value = feedPost.value?.copy(
+
+        val newFeedPost = feedPost.copy(
             statistic = newStatistics
         )
+
+        _feedPosts.value = modifiedPosts.apply {
+            replaceAll {
+                if (it.id == newFeedPost.id) {
+                    newFeedPost
+                } else {
+                    it
+                }
+            }
+        }
+    }
+
+    fun deleteFeedPost(feedPost: FeedPost) {
+        val posts = feedPosts.value?.toMutableList() ?: mutableListOf()
+        posts.remove(feedPost)
+        _feedPosts.value = posts
     }
 
 }

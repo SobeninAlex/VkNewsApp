@@ -51,7 +51,7 @@ fun PostCard(
         )
     ) {
         Column(
-            modifier = Modifier.padding(12.dp)
+            modifier = Modifier.padding(8.dp)
         ) {
             PostHeader(feedPost)
             Spacer(modifier = Modifier.height(12.dp))
