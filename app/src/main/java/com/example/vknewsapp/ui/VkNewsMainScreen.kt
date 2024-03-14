@@ -10,16 +10,18 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 import com.example.vknewsapp.MainViewModel
+import com.example.vknewsapp.navigation.AppNavGraph
 
 @Composable
 fun MainScreen(mainViewModel: MainViewModel) {
 
-    val selectedNavItem by mainViewModel.selectedNavItem.observeAsState(NavigationItem.Home)
+    val navHostController = rememberNavController()
 
     Scaffold(
         bottomBar = {
@@ -29,18 +31,27 @@ fun MainScreen(mainViewModel: MainViewModel) {
                 containerColor = MaterialTheme.colorScheme.primary
             ) {
 
+                val navBackStackEntry by navHostController.currentBackStackEntryAsState()
+                val currentRoute = navBackStackEntry?.destination?.route
+
                 val items = listOf(
-                    NavigationItem.Home,
-                    NavigationItem.Favourite,
-                    NavigationItem.Profile
+                    BottomNavigationBarItem.Home,
+                    BottomNavigationBarItem.Favourite,
+                    BottomNavigationBarItem.Profile
                 )
 
                 items.forEach { navItem ->
                     NavigationBarItem(
-                        selected = selectedNavItem == navItem,
-                        onClick = { mainViewModel.selectNavItem(navItem) },
-                        icon = { Icon(navItem.icon, contentDescription = null) },
-                        label = { Text(text = stringResource(id = navItem.titleResId)) },
+                        selected = currentRoute == navItem.screen.route,
+                        onClick = {
+                            navHostController.navigate(navItem.screen.route)
+                        },
+                        icon = {
+                            Icon(navItem.icon, contentDescription = null)
+                        },
+                        label = {
+                            Text(text = stringResource(id = navItem.titleResId))
+                        },
                         colors = NavigationBarItemDefaults.colors(
                             selectedIconColor = MaterialTheme.colorScheme.onPrimary,
                             selectedTextColor = MaterialTheme.colorScheme.onPrimary,
@@ -54,17 +65,18 @@ fun MainScreen(mainViewModel: MainViewModel) {
         },
     ) { paddingValues ->
 
-        when (selectedNavItem) {
-            NavigationItem.Home -> {
+        AppNavGraph(
+            navHostController = navHostController,
+            homeScreenContent = {
                 HomeScreen(mainViewModel = mainViewModel, paddingValues = paddingValues)
-            }
-            NavigationItem.Favourite -> {
+            },
+            favouriteScreenContent = {
                 Text(text = "Favourite", color = MaterialTheme.colorScheme.onPrimary)
-            }
-            NavigationItem.Profile -> {
+            },
+            profileScreenContent = {
                 Text(text = "Profile", color = MaterialTheme.colorScheme.onPrimary)
             }
-        }
+        )
     }
 
 }
