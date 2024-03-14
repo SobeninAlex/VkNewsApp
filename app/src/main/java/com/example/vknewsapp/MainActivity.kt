@@ -31,35 +31,3 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
-@Composable
-private fun PreviewPostCard() {
-    VkNewsAppTheme {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(color = MaterialTheme.colorScheme.background)
-                .padding(8.dp),
-        ) {
-//            PostCard()
-        }
-    }
-}
-
-@Preview
-@Composable
-private fun PreviewScreen() {
-    VkNewsAppTheme {
-//        MainScreen()
-    }
-}
-
-@Preview
-@Composable
-private fun PreviewScreenDark() {
-    VkNewsAppTheme(
-        darkTheme = true
-    ) {
-//        MainScreen()
-    }
-}
