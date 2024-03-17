@@ -5,8 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.vknewsapp.domain.FeedPost
 import com.example.vknewsapp.domain.StatisticItem
+import com.example.vknewsapp.ui.NewsFeedScreenState
 
-class MainViewModel(
+class NewsFeedViewModel(
 
 ) : ViewModel() {
 
@@ -17,12 +18,16 @@ class MainViewModel(
             )
         }
     }
+    private val initialState = NewsFeedScreenState.Posts(posts = sourceList)
 
-    private val _feedPosts = MutableLiveData<List<FeedPost>>(sourceList)
-    val feedPosts: LiveData<List<FeedPost>> get() = _feedPosts
+    private val _screenState = MutableLiveData<NewsFeedScreenState>(initialState)
+    val screenState: LiveData<NewsFeedScreenState> get() = _screenState
 
     fun updateCount(feedPost: FeedPost, item: StatisticItem) {
-        val modifiedPosts = feedPosts.value?.toMutableList() ?: mutableListOf()
+        val currentState = screenState.value
+        if (currentState !is NewsFeedScreenState.Posts) return
+
+        val modifiedPosts = currentState.posts.toMutableList()
         val oldStatistics = feedPost.statistic
 
         val newStatistics = oldStatistics.toMutableList().apply {
@@ -39,7 +44,7 @@ class MainViewModel(
             statistic = newStatistics
         )
 
-        _feedPosts.value = modifiedPosts.apply {
+        val newPosts = modifiedPosts.apply {
             replaceAll {
                 if (it.id == newFeedPost.id) {
                     newFeedPost
@@ -48,12 +53,16 @@ class MainViewModel(
                 }
             }
         }
+        _screenState.value = NewsFeedScreenState.Posts(posts = newPosts)
     }
 
     fun deleteFeedPost(feedPost: FeedPost) {
-        val posts = feedPosts.value?.toMutableList() ?: mutableListOf()
+        val currentState = screenState.value
+        if (currentState !is NewsFeedScreenState.Posts) return
+
+        val posts = currentState.posts.toMutableList()
         posts.remove(feedPost)
-        _feedPosts.value = posts
+        _screenState.value = NewsFeedScreenState.Posts(posts = posts)
     }
 
 }

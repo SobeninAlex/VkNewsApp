@@ -1,5 +1,6 @@
 package com.example.vknewsapp.ui
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,16 +21,46 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.vknewsapp.MainViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.vknewsapp.NewsFeedViewModel
+import com.example.vknewsapp.domain.FeedPost
+
+/**
+ * В jetpack compose почти всегда используется UDF - архитектура
+ * Unidirectional Data Flow - однонаправленный поток данных
+ */
+
+@Composable
+fun HomeScreen(
+    paddingValues: PaddingValues,
+    onCommentClickListener: (FeedPost) -> Unit
+) {
+    val newsFeedViewModel= viewModel<NewsFeedViewModel>()
+    val screenState = newsFeedViewModel.screenState.observeAsState(NewsFeedScreenState.Initial)
+
+    when (val currentState = screenState.value) {
+        is NewsFeedScreenState.Posts -> {
+            FeedPosts(
+                posts = currentState.posts,
+                newsFeedViewModel = newsFeedViewModel,
+                paddingValues = paddingValues,
+                onCommentClickListener = onCommentClickListener
+            )
+        }
+        is NewsFeedScreenState.Initial -> {}
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
-fun HomeScreen(
-    mainViewModel: MainViewModel,
-    paddingValues: PaddingValues
+private fun FeedPosts(
+    posts: List<FeedPost>,
+    newsFeedViewModel: NewsFeedViewModel,
+    paddingValues: PaddingValues,
+    onCommentClickListener: (FeedPost) -> Unit
 ) {
-    val feedPosts = mainViewModel.feedPosts.observeAsState(listOf())
-
     LazyColumn(
         modifier = Modifier.padding(paddingValues),
         contentPadding =  PaddingValues(
@@ -41,14 +72,14 @@ fun HomeScreen(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(
-            items = feedPosts.value,
+            items = posts,
             key = { it.id }
         ) { feedPost ->
 
             val dismissState = rememberSwipeToDismissBoxState(
                 confirmValueChange = { swipeToDismiss ->
                     if (swipeToDismiss == SwipeToDismissBoxValue.EndToStart) {
-                        mainViewModel.deleteFeedPost(feedPost)
+                        newsFeedViewModel.deleteFeedPost(feedPost)
                     }
                     true
                 },
@@ -81,16 +112,16 @@ fun HomeScreen(
                 PostCard(
                     feedPost = feedPost,
                     onLikeClickListener = { statisticItem ->
-                        mainViewModel.updateCount(feedPost = feedPost, item = statisticItem)
+                        newsFeedViewModel.updateCount(feedPost = feedPost, item = statisticItem)
                     },
                     onShareClickListener = { statisticItem ->
-                        mainViewModel.updateCount(feedPost = feedPost, item = statisticItem)
+                        newsFeedViewModel.updateCount(feedPost = feedPost, item = statisticItem)
                     },
                     onViewClickListener = { statisticItem ->
-                        mainViewModel.updateCount(feedPost = feedPost, item = statisticItem)
+                        newsFeedViewModel.updateCount(feedPost = feedPost, item = statisticItem)
                     },
-                    onCommentClickListener = { statisticItem ->
-                        mainViewModel.updateCount(feedPost = feedPost, item = statisticItem)
+                    onCommentClickListener = {
+                        onCommentClickListener(feedPost)
                     }
                 )
             }

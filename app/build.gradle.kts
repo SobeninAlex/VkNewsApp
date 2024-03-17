@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id ("kotlin-parcelize")
 }
 
 android {
@@ -56,6 +57,12 @@ dependencies {
 
     //jetpack compose navigation
     implementation("androidx.navigation:navigation-compose:2.7.7")
+
+    //lifecycle-viewmodel-compose
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
+
+    //Gson
+    implementation("com.google.code.gson:gson:2.10")
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
