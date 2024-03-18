@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -21,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.vknewsapp.R
 import com.example.vknewsapp.ui.theme.DarkBlue
@@ -30,9 +32,10 @@ import com.example.vknewsapp.ui.theme.DarkBlue
 fun LoginScreen(
     onLoginClick: () -> Unit
 ) {
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .background(color = MaterialTheme.colorScheme.background),
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = MaterialTheme.colorScheme.background),
         contentAlignment = Alignment.Center
     ) {
         Column(
@@ -42,12 +45,15 @@ fun LoginScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
-                modifier = Modifier.size(100.dp),
+                modifier = Modifier.size(160.dp),
                 painter = painterResource(id = R.drawable.icon_vk),
                 contentDescription = null
             )
             Spacer(modifier = Modifier.height(100.dp))
             Button(
+                modifier = Modifier
+                    .wrapContentHeight()
+                    .width(120.dp),
                 shape = RoundedCornerShape(size = 4.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = DarkBlue,

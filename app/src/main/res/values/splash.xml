@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.VkNewsApp.MySplash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/splash_screen_color</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/avd_anim_vk_logo</item>
+        <item name="windowSplashScreenAnimationDuration">2000</item>
+        <item name="postSplashScreenTheme">@style/Theme.VkNewsApp</item>
+    </style>
+</resources>
