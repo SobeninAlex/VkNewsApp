@@ -11,7 +11,10 @@ val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
 val Black500 = Color(0xFF686868)
+val Black300 = Color(0xFF626262)
 val Black700 = Color(0xFF292929)
 val Black900 = Color(0xFF222222)
 val White200 = Color(0xFFE7E7E7)
+
+val DarkBlue = Color(0xFF345E90)
 

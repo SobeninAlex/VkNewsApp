@@ -1,4 +1,4 @@
-package com.example.vknewsapp.ui
+package com.example.vknewsapp.presentation.main
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.FavoriteBorder
@@ -26,7 +26,7 @@ sealed class BottomNavigationBarItem(
         icon = Icons.Outlined.FavoriteBorder
     )
 
-    data object Profile: BottomNavigationBarItem (
+    data object Profile: BottomNavigationBarItem(
         screen = Screen.Profile,
         titleResId = R.string.navigation_item_profile,
         icon = Icons.Outlined.Person
