@@ -20,6 +20,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.splashscreen.SplashScreen
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.vknewsapp.domain.FeedPost
 
@@ -107,8 +109,8 @@ private fun FeedPosts(
             ) {
                 PostCard(
                     feedPost = feedPost,
-                    onLikeClickListener = { statisticItem ->
-                        newsFeedViewModel.updateCount(feedPost = feedPost, item = statisticItem)
+                    onLikeClickListener = { _ ->
+                        newsFeedViewModel.changeLikeStatus(feedPost)
                     },
                     onShareClickListener = { statisticItem ->
                         newsFeedViewModel.updateCount(feedPost = feedPost, item = statisticItem)
