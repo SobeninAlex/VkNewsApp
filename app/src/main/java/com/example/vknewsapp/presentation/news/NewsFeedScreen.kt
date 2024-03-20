@@ -5,15 +5,19 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,6 +28,7 @@ import androidx.core.splashscreen.SplashScreen
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.vknewsapp.domain.FeedPost
+import com.example.vknewsapp.ui.theme.DarkBlue
 
 /**
  * В jetpack compose почти всегда используется UDF - архитектура
@@ -44,8 +49,20 @@ fun NewsFeedScreen(
                 posts = currentState.posts,
                 newsFeedViewModel = newsFeedViewModel,
                 paddingValues = paddingValues,
-                onCommentClickListener = onCommentClickListener
+                onCommentClickListener = onCommentClickListener,
+                nextDataIsLoading = currentState.nextDataIsLoading
             )
+        }
+        is NewsFeedScreenState.Loading -> {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(
+                    color = DarkBlue
+                )
+            }
         }
         is NewsFeedScreenState.Initial -> {}
     }
@@ -57,7 +74,8 @@ private fun FeedPosts(
     posts: List<FeedPost>,
     newsFeedViewModel: NewsFeedViewModel,
     paddingValues: PaddingValues,
-    onCommentClickListener: (FeedPost) -> Unit
+    onCommentClickListener: (FeedPost) -> Unit,
+    nextDataIsLoading: Boolean
 ) {
     LazyColumn(
         modifier = Modifier.padding(paddingValues),
@@ -112,16 +130,30 @@ private fun FeedPosts(
                     onLikeClickListener = { _ ->
                         newsFeedViewModel.changeLikeStatus(feedPost)
                     },
-                    onShareClickListener = { statisticItem ->
-                        newsFeedViewModel.updateCount(feedPost = feedPost, item = statisticItem)
-                    },
-                    onViewClickListener = { statisticItem ->
-                        newsFeedViewModel.updateCount(feedPost = feedPost, item = statisticItem)
-                    },
                     onCommentClickListener = {
                         onCommentClickListener(feedPost)
                     }
                 )
+            }
+        }
+
+        item {
+            if (nextDataIsLoading) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                        .padding(16.dp),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    CircularProgressIndicator(
+                        color = DarkBlue
+                    )
+                }
+            } else {
+                SideEffect {
+                    newsFeedViewModel.loadNextRecommendations()
+                }
             }
         }
     }
