@@ -1,5 +1,6 @@
 package com.example.vknewsapp.presentation.comments
 
+import android.app.Application
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Card
@@ -28,12 +30,17 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.AsyncImage
+import com.example.vknewsapp.R
 import com.example.vknewsapp.domain.FeedPost
 import com.example.vknewsapp.domain.PostComment
 import com.example.vknewsapp.ui.theme.VkNewsAppTheme
@@ -45,7 +52,10 @@ fun CommentsScreen(
     feedPost: FeedPost
 ) {
     val commentsViewModel = viewModel<CommentsViewModel>(
-        factory = CommentsViewModelFactory(feedPost)
+        factory = CommentsViewModelFactory(
+            feedPost = feedPost,
+            application = LocalContext.current.applicationContext as Application
+        )
     )
     val screenState = commentsViewModel.screenState.observeAsState(CommentsScreenState.Initial)
     val currentState = screenState.value
@@ -62,7 +72,7 @@ fun CommentsScreen(
                     TopAppBar(
                         title = {
                             Text(
-                                text = "Comments for FeedPost Id: ${currentState.feedPost.id}",
+                                text = stringResource(R.string.comments_text),
                                 color = MaterialTheme.colorScheme.onPrimary
                             )
                         },
@@ -114,10 +124,11 @@ private fun CommentItem(
                 vertical = 4.dp
             ),
     ) {
-        Image(
+        AsyncImage(
             modifier = Modifier
-                .size(48.dp),
-            painter = painterResource(postComment.authorAvatarId),
+                .size(48.dp)
+                .clip(shape = CircleShape),
+            model = postComment.authorAvatarUrl,
             contentDescription = null
         )
         Spacer(modifier = Modifier.width(12.dp))
@@ -143,13 +154,5 @@ private fun CommentItem(
                 color = MaterialTheme.colorScheme.onSecondary
             )
         }
-    }
-}
-
-@Preview
-@Composable
-private fun PreviewCommentItem() {
-    VkNewsAppTheme {
-        CommentItem(postComment = PostComment(id = 0))
     }
 }

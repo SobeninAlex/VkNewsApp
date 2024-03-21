@@ -4,6 +4,7 @@ import android.app.Application
 import com.example.vknewsapp.data.mapper.NewsFeedMapper
 import com.example.vknewsapp.data.network.ApiFactory
 import com.example.vknewsapp.domain.FeedPost
+import com.example.vknewsapp.domain.PostComment
 import com.example.vknewsapp.domain.StatisticItem
 import com.example.vknewsapp.domain.StatisticType
 import com.vk.api.sdk.VKPreferencesKeyValueStorage
@@ -29,6 +30,15 @@ class NewsFeedRepository(application: Application) {
             postId = feedPost.id
         )
         _feedPosts.remove(feedPost)
+    }
+
+    suspend fun loadComments(feedPost: FeedPost): List<PostComment> {
+        val response = apiService.getComments(
+            token = getAccessToken(),
+            ownerId = feedPost.communityId,
+            postId = feedPost.id
+        )
+        return mapper.napResponseToComments(response)
     }
 
     suspend fun loadRecommendations(): List<FeedPost> {

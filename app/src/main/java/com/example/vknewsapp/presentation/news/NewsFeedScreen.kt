@@ -22,12 +22,15 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.splashscreen.SplashScreen
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.vknewsapp.domain.FeedPost
+import com.example.vknewsapp.presentation.comments.CommentsScreen
+import com.example.vknewsapp.presentation.main.MainActivity
 import com.example.vknewsapp.ui.theme.DarkBlue
 
 /**
@@ -42,6 +45,8 @@ fun NewsFeedScreen(
 ) {
     val newsFeedViewModel= viewModel<NewsFeedViewModel>()
     val screenState = newsFeedViewModel.screenState.observeAsState(NewsFeedScreenState.Initial)
+
+//    (LocalContext.current as MainActivity).installSplashScreen()
 
     when (val currentState = screenState.value) {
         is NewsFeedScreenState.Posts -> {

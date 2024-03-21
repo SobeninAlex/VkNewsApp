@@ -1,7 +1,9 @@
 package com.example.vknewsapp.data.mapper
 
+import com.example.vknewsapp.data.model.CommentsResponseDto
 import com.example.vknewsapp.data.model.NewsFeedResponseDto
 import com.example.vknewsapp.domain.FeedPost
+import com.example.vknewsapp.domain.PostComment
 import com.example.vknewsapp.domain.StatisticItem
 import com.example.vknewsapp.domain.StatisticType
 import java.text.SimpleDateFormat
@@ -36,6 +38,28 @@ class NewsFeedMapper {
                 isLiked = post.likes.userLikes > 0
             )
             result.add(feedPost)
+        }
+
+        return result
+    }
+
+    fun napResponseToComments(commentsResponse: CommentsResponseDto): List<PostComment> {
+        val result = mutableListOf<PostComment>()
+
+        val comments = commentsResponse.commentsContent.comments
+        val profiles = commentsResponse.commentsContent.profiles
+
+        for (comment in comments) {
+            if (comment.text.isBlank()) continue
+            val profile = profiles.find { it.id == comment.authorId } ?: continue
+            val postComment = PostComment(
+                id = comment.id,
+                authorName = "${profile.firstName} ${profile.lastName}",
+                authorAvatarUrl = profile.imageUrl,
+                commentText = comment.text,
+                publicationDate = mapTimestampToDate(comment.date)
+            )
+            result.add(postComment)
         }
 
         return result
