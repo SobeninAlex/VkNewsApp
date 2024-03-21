@@ -2,16 +2,14 @@ package com.example.vknewsapp.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.example.vknewsapp.domain.FeedPost
-import com.google.gson.Gson
 
 fun NavGraphBuilder.homeScreenNavGraph(
     newsFeedScreenContent: @Composable () -> Unit,
-    commentsScreenContent: @Composable (FeedPost) -> Unit
+    commentScreenContent: @Composable (FeedPost) -> Unit
 ) {
     navigation(
         startDestination = Screen.NewsFeed.route,
@@ -55,7 +53,7 @@ fun NavGraphBuilder.homeScreenNavGraph(
             //аргументы - объекты через кастомный тип
             val feedPost = it.arguments?.getParcelable<FeedPost>(Screen.KEY_FEED_POST) ?: throw RuntimeException("Args is null")
 
-            commentsScreenContent(feedPost
+            commentScreenContent(feedPost
 //                FeedPost(
 //                    id = feedPostId,
 //                    contentText = feedPostContentText
