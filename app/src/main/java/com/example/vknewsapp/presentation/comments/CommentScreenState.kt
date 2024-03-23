@@ -3,12 +3,15 @@ package com.example.vknewsapp.presentation.comments
 import com.example.vknewsapp.domain.FeedPost
 import com.example.vknewsapp.domain.PostComment
 
-sealed class CommentsScreenState {
+sealed class CommentScreenState {
 
-    data object Initial : CommentsScreenState()
-    data class Comments(
+    data object Initial : CommentScreenState()
+
+    data object Loading : CommentScreenState()
+
+    data class Comment(
         val feedPost: FeedPost,
         val comments: List<PostComment>
-    ) : CommentsScreenState()
+    ) : CommentScreenState()
 
 }

@@ -1,12 +1,13 @@
 package com.example.vknewsapp.presentation.comments
 
 import android.app.Application
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -19,6 +20,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -28,14 +30,13 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -43,9 +44,8 @@ import coil.compose.AsyncImage
 import com.example.vknewsapp.R
 import com.example.vknewsapp.domain.FeedPost
 import com.example.vknewsapp.domain.PostComment
-import com.example.vknewsapp.ui.theme.VkNewsAppTheme
+import com.example.vknewsapp.ui.theme.DarkBlue
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CommentsScreen(
     onBackPressed: () -> Unit,
@@ -57,56 +57,83 @@ fun CommentsScreen(
             application = LocalContext.current.applicationContext as Application
         )
     )
-    val screenState = commentsViewModel.screenState.observeAsState(CommentsScreenState.Initial)
-    val currentState = screenState.value
+    val screenState = commentsViewModel.screenState.collectAsState(CommentScreenState.Initial)
 
-    if (currentState is CommentsScreenState.Comments) {
-        Scaffold(
-            topBar = {
-                Card(
-                    shape = RectangleShape,
-                    elevation = CardDefaults.cardElevation(
-                        defaultElevation = 4.dp
-                    )
-                ) {
-                    TopAppBar(
-                        title = {
-                            Text(
-                                text = stringResource(R.string.comments_text),
-                                color = MaterialTheme.colorScheme.onPrimary
-                            )
-                        },
-                        navigationIcon = {
-                            IconButton(onClick = { onBackPressed() }) {
-                                Icon(
-                                    imageVector = Icons.Filled.ArrowBack,
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.onPrimary
-                                )
-                            }
-                        },
-                        colors = TopAppBarDefaults.topAppBarColors(
-                            containerColor = MaterialTheme.colorScheme.primary
-                        )
-                    )
-                }
-            }
-        ) { paddingValues ->
-            LazyColumn(
+    when (val currentState = screenState.value) {
+        is CommentScreenState.Loading -> {
+            Box(
                 modifier = Modifier
-                    .padding(paddingValues),
-                contentPadding = PaddingValues(
-                    top = 8.dp,
-                    bottom = 66.dp
-                ),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                    .fillMaxSize(),
+                contentAlignment = Alignment.Center
             ) {
-                items(
-                    items = currentState.comments,
-                    key = { it.id },
-                ) { postComment ->
-                    CommentItem(postComment = postComment)
-                }
+                CircularProgressIndicator(
+                    color = DarkBlue
+                )
+            }
+        }
+
+        is CommentScreenState.Comment -> {
+            CommentsView(
+                onBackPressed = onBackPressed,
+                currentState = currentState
+            )
+        }
+
+        is CommentScreenState.Initial -> {}
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun CommentsView(
+    onBackPressed: () -> Unit,
+    currentState: CommentScreenState.Comment
+) {
+    Scaffold(
+        topBar = {
+            Card(
+                shape = RectangleShape,
+                elevation = CardDefaults.cardElevation(
+                    defaultElevation = 4.dp
+                )
+            ) {
+                TopAppBar(
+                    title = {
+                        Text(
+                            text = stringResource(R.string.comments_text),
+                            color = MaterialTheme.colorScheme.onPrimary
+                        )
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = { onBackPressed() }) {
+                            Icon(
+                                imageVector = Icons.Filled.ArrowBack,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onPrimary
+                            )
+                        }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.primary
+                    )
+                )
+            }
+        }
+    ) { paddingValues ->
+        LazyColumn(
+            modifier = Modifier
+                .padding(paddingValues),
+            contentPadding = PaddingValues(
+                top = 8.dp,
+                bottom = 66.dp
+            ),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            items(
+                items = currentState.comments,
+                key = { it.id },
+            ) { postComment ->
+                CommentItem(postComment = postComment)
             }
         }
     }
