@@ -8,7 +8,7 @@ import com.example.vknewsapp.domain.FeedPost
 import com.example.vknewsapp.domain.PostComment
 import com.example.vknewsapp.domain.StatisticItem
 import com.example.vknewsapp.domain.StatisticType
-import com.example.vknewsapp.extensions.mergeWith
+import com.example.vknewsapp.utils.extensions.mergeWith
 import com.vk.api.sdk.VKPreferencesKeyValueStorage
 import com.vk.api.sdk.auth.VKAccessToken
 import kotlinx.coroutines.CoroutineScope

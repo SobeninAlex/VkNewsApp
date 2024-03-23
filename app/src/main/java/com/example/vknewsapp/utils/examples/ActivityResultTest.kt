@@ -1,4 +1,4 @@
-package com.example.vknewsapp.examples
+package com.example.vknewsapp.utils.examples
 
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult

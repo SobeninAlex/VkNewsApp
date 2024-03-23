@@ -13,21 +13,15 @@ import com.vk.api.sdk.auth.VKScope
 
 class MainActivity : ComponentActivity() {
 
-//    private val newsFeedViewModel by viewModels<NewsFeedViewModel>()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        installSplashScreen().apply {
-//            setKeepOnScreenCondition {
-//                newsFeedViewModel.isLoadingContent.value
-//            } todo
-        }
+        installSplashScreen()
 
         setContent {
             VkNewsAppTheme {
-
                 val mainViewModel = viewModel<MainViewModel>()
+
                 val authState = mainViewModel.authState.observeAsState(AuthState.Initial)
 
                 val launcher = rememberLauncherForActivityResult(
@@ -40,6 +34,7 @@ class MainActivity : ComponentActivity() {
                     is AuthState.Authorized -> {
                         MainScreen()
                     }
+
                     is AuthState.NotAuthorized -> {
                         LoginScreen(
                             onLoginClick = {
@@ -47,9 +42,9 @@ class MainActivity : ComponentActivity() {
                             }
                         )
                     }
+
                     is AuthState.Initial -> {}
                 }
-
             }
         }
     }

@@ -6,11 +6,10 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.vknewsapp.data.repository.NewsFeedRepository
 import com.example.vknewsapp.domain.FeedPost
-import com.example.vknewsapp.extensions.mergeWith
+import com.example.vknewsapp.utils.extensions.mergeWith
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch

@@ -1,4 +1,4 @@
-package com.example.vknewsapp.extensions
+package com.example.vknewsapp.utils.extensions
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.merge

@@ -8,7 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.vknewsapp.data.repository.NewsFeedRepository
 import com.example.vknewsapp.domain.FeedPost
 import com.example.vknewsapp.domain.PostComment
-import com.example.vknewsapp.extensions.mergeWith
+import com.example.vknewsapp.utils.extensions.mergeWith
 import com.example.vknewsapp.presentation.news.NewsFeedScreenState
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
