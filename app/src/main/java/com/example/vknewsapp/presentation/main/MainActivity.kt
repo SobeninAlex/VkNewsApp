@@ -7,7 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.runtime.collectAsState
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.vknewsapp.domain.AuthState
+import com.example.vknewsapp.domain.entity.AuthState
 import com.example.vknewsapp.ui.theme.VkNewsAppTheme
 import com.vk.api.sdk.VK
 import com.vk.api.sdk.auth.VKScope

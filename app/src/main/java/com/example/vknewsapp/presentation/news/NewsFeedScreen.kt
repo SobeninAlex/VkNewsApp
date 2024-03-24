@@ -19,19 +19,13 @@ import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.splashscreen.SplashScreen
-import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.vknewsapp.domain.FeedPost
-import com.example.vknewsapp.presentation.comments.CommentsScreen
-import com.example.vknewsapp.presentation.main.MainActivity
+import com.example.vknewsapp.domain.entity.FeedPost
 import com.example.vknewsapp.ui.theme.DarkBlue
 
 /**
