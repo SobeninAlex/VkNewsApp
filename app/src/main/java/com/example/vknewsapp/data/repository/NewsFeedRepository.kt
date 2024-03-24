@@ -5,16 +5,15 @@ import android.util.Log
 import com.example.vknewsapp.data.mapper.NewsFeedMapper
 import com.example.vknewsapp.data.network.ApiFactory
 import com.example.vknewsapp.domain.FeedPost
-import com.example.vknewsapp.domain.PostComment
 import com.example.vknewsapp.domain.StatisticItem
 import com.example.vknewsapp.domain.StatisticType
+import com.example.vknewsapp.domain.AuthState
 import com.example.vknewsapp.utils.extensions.mergeWith
 import com.vk.api.sdk.VKPreferencesKeyValueStorage
 import com.vk.api.sdk.auth.VKAccessToken
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -26,7 +25,8 @@ import kotlinx.coroutines.flow.stateIn
 class NewsFeedRepository(application: Application) {
 
     private val storage = VKPreferencesKeyValueStorage(application)
-    private val token = VKAccessToken.restore(storage)
+    private val token
+        get() = VKAccessToken.restore(storage)
 
     private val apiService = ApiFactory.apiService
     private val mapper = NewsFeedMapper()
@@ -80,6 +80,32 @@ class NewsFeedRepository(application: Application) {
             started = SharingStarted.Lazily,
             initialValue = feedPosts
         )
+
+    private val checkAuthStateEvents = MutableSharedFlow<Unit>(replay = 1)
+
+    val authStateFlow = flow {
+        checkAuthStateEvents.emit(Unit)
+        checkAuthStateEvents.collect {
+            val currentToken = token
+            val loggedIn = currentToken != null && currentToken.isValid
+            Log.d("NewsFeedRepository", "access_token: ${token?.accessToken}")
+
+            val authState = if (loggedIn) {
+                AuthState.Authorized
+            } else {
+                AuthState.NotAuthorized
+            }
+            emit(authState)
+        }
+    }.stateIn(
+        scope = coroutineScope,
+        started = SharingStarted.Lazily,
+        initialValue = AuthState.Initial
+    )
+
+    suspend fun checkAuthState() {
+        checkAuthStateEvents.emit(Unit)
+    }
 
     suspend fun loadNextData() {
         nextDataNeededEvents.emit(Unit)

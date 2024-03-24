@@ -4,9 +4,10 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.collectAsState
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.vknewsapp.domain.AuthState
 import com.example.vknewsapp.ui.theme.VkNewsAppTheme
 import com.vk.api.sdk.VK
 import com.vk.api.sdk.auth.VKScope
@@ -22,12 +23,12 @@ class MainActivity : ComponentActivity() {
             VkNewsAppTheme {
                 val mainViewModel = viewModel<MainViewModel>()
 
-                val authState = mainViewModel.authState.observeAsState(AuthState.Initial)
+                val authState = mainViewModel.authState.collectAsState(AuthState.Initial)
 
                 val launcher = rememberLauncherForActivityResult(
                     contract = VK.getVKAuthActivityResultContract()
                 ) {
-                    mainViewModel.performAuthResult(it)
+                    mainViewModel.performAuthResult()
                 }
 
                 when (authState.value) {
