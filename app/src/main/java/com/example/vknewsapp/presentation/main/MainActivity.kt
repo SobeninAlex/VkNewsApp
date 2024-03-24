@@ -8,20 +8,33 @@ import androidx.compose.runtime.collectAsState
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.vknewsapp.domain.entity.AuthState
+import com.example.vknewsapp.presentation.ViewModelFactory
+import com.example.vknewsapp.presentation.VkNewsApplication
 import com.example.vknewsapp.ui.theme.VkNewsAppTheme
 import com.vk.api.sdk.VK
 import com.vk.api.sdk.auth.VKScope
+import javax.inject.Inject
 
 class MainActivity : ComponentActivity() {
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val component by lazy {
+        (application as VkNewsApplication).component
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        component.inject(this)
         super.onCreate(savedInstanceState)
 
         installSplashScreen()
 
         setContent {
             VkNewsAppTheme {
-                val mainViewModel = viewModel<MainViewModel>()
+                val mainViewModel = viewModel<MainViewModel>(
+                    factory = viewModelFactory
+                )
 
                 val authState = mainViewModel.authState.collectAsState(AuthState.Initial)
 
@@ -33,7 +46,7 @@ class MainActivity : ComponentActivity() {
 
                 when (authState.value) {
                     is AuthState.Authorized -> {
-                        MainScreen()
+                        MainScreen(viewModelFactory)
                     }
 
                     is AuthState.NotAuthorized -> {
