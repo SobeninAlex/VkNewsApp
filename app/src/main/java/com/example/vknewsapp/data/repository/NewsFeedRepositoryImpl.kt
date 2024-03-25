@@ -142,11 +142,11 @@ class NewsFeedRepositoryImpl @Inject constructor(
         .catch {
             Log.d("NewsFeedRepository", "oops! loadComments")
         }
-        .stateIn(
-            scope = coroutineScope,
-            started = SharingStarted.Lazily,
-            initialValue = listOf()
-        )
+//        .stateIn(
+//            scope = coroutineScope,
+//            started = SharingStarted.Lazily,
+//            initialValue = listOf()
+//        )
 
     override suspend fun changeLikeStatus(feedPost: FeedPost) {
         val response = if (feedPost.isLiked) {

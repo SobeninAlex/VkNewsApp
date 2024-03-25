@@ -45,17 +45,23 @@ import com.example.vknewsapp.R
 import com.example.vknewsapp.domain.entity.FeedPost
 import com.example.vknewsapp.domain.entity.PostComment
 import com.example.vknewsapp.presentation.ViewModelFactory
+import com.example.vknewsapp.presentation.VkNewsApplication
 import com.example.vknewsapp.ui.theme.DarkBlue
 
 @Composable
 fun CommentsScreen(
-    viewModelFactory: ViewModelFactory,
     onBackPressed: () -> Unit,
     feedPost: FeedPost
 ) {
+    val component = (LocalContext.current.applicationContext as VkNewsApplication)
+        .component
+        .getCommentScreenComponentFactory()
+        .create(feedPost)
+
     val commentsViewModel = viewModel<CommentsViewModel>(
-        factory = viewModelFactory
+        factory = component.getViewModelFactory()
     )
+
     val screenState = commentsViewModel.screenState.collectAsState(CommentScreenState.Initial)
 
     when (val currentState = screenState.value) {

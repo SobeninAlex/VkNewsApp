@@ -22,11 +22,12 @@ interface ApplicationComponent {
 
     fun inject(activity: MainActivity)
 
+    fun getCommentScreenComponentFactory(): CommentScreenComponent.Factory
+
     @Component.Factory
     interface ApplicationComponentFactory {
         fun create(
             @BindsInstance context: Context,
-            @BindsInstance feedPost: FeedPost
         ): ApplicationComponent
     }
 

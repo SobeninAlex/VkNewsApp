@@ -8,7 +8,7 @@ class VkNewsApplication : Application() {
 
     val component: ApplicationComponent by lazy {
         DaggerApplicationComponent.factory()
-            .create(this, TODO())
+            .create(this)
     }
 
 }

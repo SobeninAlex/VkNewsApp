@@ -12,7 +12,7 @@ interface NewsFeedRepository {
 
     fun getRecommendations(): StateFlow<List<FeedPost>>
 
-    fun loadComments(feedPost: FeedPost): StateFlow<List<PostComment>>
+    fun loadComments(feedPost: FeedPost): Flow<List<PostComment>>
 
     suspend fun checkAuthState()
 
