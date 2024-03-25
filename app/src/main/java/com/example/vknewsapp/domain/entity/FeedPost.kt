@@ -2,10 +2,19 @@ package com.example.vknewsapp.domain.entity
 
 import android.os.Bundle
 import android.os.Parcelable
+import androidx.compose.runtime.Immutable
 import androidx.navigation.NavType
 import com.google.gson.Gson
 import kotlinx.parcelize.Parcelize
 
+/**
+ * @Immutable -> говорим компилятору, что экземпляры класса FeedPost 100% НЕ изменяемые!
+ * Если какая-то composable-функция принимает в качестве параметра объект FeedPost, и эта же функция
+ * вызывается еще раз с тем же объектом, то производить рекомпозицию НЕ нужно.
+ * Данной аннотацией НЕ следует помечать классы если у них есть поля var
+ */
+
+@Immutable
 @Parcelize
 data class FeedPost(
     val id: Long,

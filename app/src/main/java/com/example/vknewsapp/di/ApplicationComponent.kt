@@ -6,6 +6,7 @@ import com.example.vknewsapp.di.module.ApiModule
 import com.example.vknewsapp.di.module.DataModule
 import com.example.vknewsapp.di.module.ViewModelModule
 import com.example.vknewsapp.domain.entity.FeedPost
+import com.example.vknewsapp.presentation.ViewModelFactory
 import com.example.vknewsapp.presentation.main.MainActivity
 import dagger.BindsInstance
 import dagger.Component
@@ -20,7 +21,7 @@ import dagger.Component
 )
 interface ApplicationComponent {
 
-    fun inject(activity: MainActivity)
+    fun getViewModelFactory(): ViewModelFactory
 
     fun getCommentScreenComponentFactory(): CommentScreenComponent.Factory
 

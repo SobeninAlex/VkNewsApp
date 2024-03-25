@@ -1,6 +1,5 @@
 package com.example.vknewsapp.presentation.comments
 
-import android.app.Application
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,12 +29,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -44,8 +43,7 @@ import coil.compose.AsyncImage
 import com.example.vknewsapp.R
 import com.example.vknewsapp.domain.entity.FeedPost
 import com.example.vknewsapp.domain.entity.PostComment
-import com.example.vknewsapp.presentation.ViewModelFactory
-import com.example.vknewsapp.presentation.VkNewsApplication
+import com.example.vknewsapp.presentation.getApplicationComponent
 import com.example.vknewsapp.ui.theme.DarkBlue
 
 @Composable
@@ -53,8 +51,7 @@ fun CommentsScreen(
     onBackPressed: () -> Unit,
     feedPost: FeedPost
 ) {
-    val component = (LocalContext.current.applicationContext as VkNewsApplication)
-        .component
+    val component = getApplicationComponent()
         .getCommentScreenComponentFactory()
         .create(feedPost)
 
@@ -64,6 +61,17 @@ fun CommentsScreen(
 
     val screenState = commentsViewModel.screenState.collectAsState(CommentScreenState.Initial)
 
+    CommentScreenContent(
+        onBackPressed = onBackPressed,
+        screenState = screenState,
+    )
+}
+
+@Composable
+private fun CommentScreenContent(
+    onBackPressed: () -> Unit,
+    screenState: State<CommentScreenState>,
+) {
     when (val currentState = screenState.value) {
         is CommentScreenState.Loading -> {
             Box(

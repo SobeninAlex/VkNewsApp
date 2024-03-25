@@ -18,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,6 +28,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.vknewsapp.domain.entity.FeedPost
 import com.example.vknewsapp.presentation.ViewModelFactory
+import com.example.vknewsapp.presentation.getApplicationComponent
 import com.example.vknewsapp.ui.theme.DarkBlue
 
 /**
@@ -36,15 +38,32 @@ import com.example.vknewsapp.ui.theme.DarkBlue
 
 @Composable
 fun NewsFeedScreen(
-    viewModelFactory: ViewModelFactory,
     paddingValues: PaddingValues,
     onCommentClickListener: (FeedPost) -> Unit
 ) {
+    val component = getApplicationComponent()
+
     val newsFeedViewModel= viewModel<NewsFeedViewModel>(
-        factory = viewModelFactory
+        factory = component.getViewModelFactory()
     )
+
     val screenState = newsFeedViewModel.screenState.collectAsState(NewsFeedScreenState.Initial)
 
+    NewsFeedScreenContent(
+        screenState = screenState,
+        newsFeedViewModel = newsFeedViewModel,
+        paddingValues = paddingValues,
+        onCommentClickListener = onCommentClickListener
+    )
+}
+
+@Composable
+private fun NewsFeedScreenContent(
+    screenState: State<NewsFeedScreenState>,
+    newsFeedViewModel: NewsFeedViewModel,
+    paddingValues: PaddingValues,
+    onCommentClickListener: (FeedPost) -> Unit
+) {
     when (val currentState = screenState.value) {
         is NewsFeedScreenState.Posts -> {
             FeedPosts(
